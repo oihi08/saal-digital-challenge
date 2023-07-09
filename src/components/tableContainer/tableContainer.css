@@ -1,0 +1,27 @@
+.table {
+  margin-top: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+.table-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+tr {
+  height: 45px;
+}
+td {
+  padding: 0 10px;
+}
+th {
+  text-align: start;
+  background: #fafafa;
+  border-bottom: 1px solid #f3f3f4;
+  transition: background 0.2s ease;
+  padding: 0 10px;
+}
+
+.table-name-column {
+  width: 15%;
+}
