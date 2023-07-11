@@ -1,16 +1,17 @@
-import logo from 'assets/logo_saal.svg';
-import './App.css';
+import Header from 'components/header/header';
+import './App.scss';
 import Dashboard from 'pages/dashboard/dashboard';
+import { TabProvider } from 'context/tab.context';
 
 function App() {
   return (
     <div className="app">
-      <header className="app-header">
-        <img src={logo} className="app-logo" alt="logo" />
-      </header>
-      <div className="app-container">
-        <Dashboard />
-      </div>
+      <TabProvider>
+        <Header />
+        <div className="app-container">
+          <Dashboard />
+        </div>
+      </TabProvider>
     </div>
   );
 }

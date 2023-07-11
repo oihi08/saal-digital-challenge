@@ -1,3 +1,4 @@
+@import '../../index.scss';
 .spinner {
   display: flex;
   justify-content: center;
@@ -9,7 +10,7 @@
   width: 30px;
   height: 30px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #6c9d0d;
+  border-top: 4px solid $color-secondary;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

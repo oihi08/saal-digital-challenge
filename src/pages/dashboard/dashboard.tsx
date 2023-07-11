@@ -2,23 +2,31 @@ import { Alert } from 'antd';
 import TableContainer from 'components/tableContainer/tableContainer';
 import TableFilters from 'components/tableFilters/tableFilters';
 import { ObjectData } from 'interfaces/object.interface';
+import { PersonnelData } from 'interfaces/personnel.interface';
 import { useEffect, useState } from 'react';
 import apiService from 'services/api.service';
-import './dashboard.css';
+import './dashboard.scss';
 import Spinner from 'components/spinner/spinner';
 import TableActions from 'components/tableActions/tableActions';
+import { useTabContext } from 'context/tab.context';
 
 const Dashboard = () => {
   const [error, setError] = useState<boolean>(false);
   const [, setLoading] = useState<boolean>(false);
-  const [objects, setObjects] = useState<ObjectData[]>([]);
-  const [filteredObjects, setFilteredObjects] = useState<ObjectData[]>([]);
+  const [objects, setObjects] = useState<(ObjectData | PersonnelData)[]>([]);
+  const [filteredObjects, setFilteredObjects] = useState<
+    (ObjectData | PersonnelData)[]
+  >([]);
+  const { currentTab } = useTabContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getObjects();
+        setObjects([]);
+        setFilteredObjects([]);
+        const response = await apiService.getObjects(currentTab);
+        console.log('response', response.data);
         setObjects(response.data);
         setFilteredObjects(response.data);
       } catch (error) {
@@ -30,7 +38,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentTab]);
 
   return (
     <div>

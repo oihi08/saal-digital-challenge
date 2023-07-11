@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './spinner.css';
+import './spinner.scss';
 
 const Spinner = () => {
   const [showSpinner, setShowSpinner] = useState(true);

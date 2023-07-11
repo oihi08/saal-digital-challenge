@@ -1,10 +1,12 @@
 import { Pagination } from 'antd';
 import { TableContainerProps } from 'interfaces/tableContainerProps.interface';
-import './tableContainer.css';
+import './tableContainer.scss';
 import { useEffect, useState } from 'react';
+import { useTabContext } from 'context/tab.context';
 
 const TableContainer = ({ data }: TableContainerProps) => {
   const pageSize = 10;
+  const { currentTab } = useTabContext();
 
   const [pagination, setPagination] = useState({
     current: 1,
@@ -36,8 +38,8 @@ const TableContainer = ({ data }: TableContainerProps) => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Description</th>
-            <th>Type</th>
+            {currentTab === 'supplies' && <th>Description</th>}
+            <th>{currentTab === 'supplies' ? 'Type' : 'Deparment'}</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -46,8 +48,15 @@ const TableContainer = ({ data }: TableContainerProps) => {
             return (
               <tr key={val.id}>
                 <td className="table-name-column">{val.name}</td>
-                <td>{val.description}</td>
-                <td>{val.type}</td>
+                {currentTab === 'supplies' && 'description' in val && (
+                  <td>{val.description}</td>
+                )}
+                {currentTab === 'supplies' && 'type' in val && (
+                  <td>{val.type}</td>
+                )}
+                {currentTab === 'personnel' && 'department' in val && (
+                  <td>{val.department}</td>
+                )}
                 <td>Button</td>
               </tr>
             );

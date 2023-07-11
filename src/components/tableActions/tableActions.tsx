@@ -1,5 +1,3 @@
-import './tableActions.css';
-
 const TableActions = () => {
   return (
     <div>

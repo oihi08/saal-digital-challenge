@@ -1,27 +1,41 @@
+@import '../../index.scss';
+
 .table {
   margin-top: 20px;
   border-collapse: collapse;
   width: 100%;
+  
+  &-name-column {
+    width: 15%;
+  }
+
 }
 .table-pagination {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
+
+tbody {
+	tr {
+		&:hover {
+			background-color: $color-primary;
+		}
+	}
+}
+
 tr {
   height: 45px;
 }
+
 td {
   padding: 0 10px;
 }
+
 th {
   text-align: start;
   background: #fafafa;
-  border-bottom: 1px solid #f3f3f4;
+  border-bottom: 1px solid $color-primary;
   transition: background 0.2s ease;
   padding: 0 10px;
-}
-
-.table-name-column {
-  width: 15%;
 }

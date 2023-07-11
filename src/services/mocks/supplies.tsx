@@ -1,6 +1,6 @@
 import types from 'utils/objectTypes.constants';
 
-const objectsMockData = [
+const suppliesMockData = [
   {
     id: 1,
     name: 'Desk',
@@ -183,4 +183,4 @@ const objectsMockData = [
   },
 ];
 
-export default objectsMockData;
+export default suppliesMockData;

@@ -23,12 +23,6 @@
     "paths": {
       "assets/*": ["assets/*"]
     }
-  /*   "paths": {
-      
-      "@/*": [
-        "*"
-      ]
-    } */
   },
   "include": [
     "src"

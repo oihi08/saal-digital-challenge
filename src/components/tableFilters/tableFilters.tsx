@@ -1,27 +1,35 @@
 import { AutoComplete } from 'antd';
-import './tableFilters.css';
+import './tableFilters.scss';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { ObjectData } from 'interfaces/object.interface';
+import { PersonnelData } from 'interfaces/personnel.interface';
+import { useTabContext } from 'context/tab.context';
 
 type TableFiltersProps = {
-  data: ObjectData[];
-  setData: Dispatch<SetStateAction<ObjectData[]>>;
+  data: (ObjectData | PersonnelData)[];
+  setData: Dispatch<SetStateAction<(ObjectData | PersonnelData)[]>>;
 };
 
 const TableFilters = ({ data, setData }: TableFiltersProps) => {
   const [options, setOptions] = useState<{ value: string; id: number }[]>([]);
+  const { currentTab } = useTabContext();
 
   const getObjects = (searchText: string) => {
     const filteredData = !searchText
       ? []
-      : data.filter(
-          (item) =>
-            item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.description.toLowerCase().includes(searchText.toLowerCase()),
-        );
+      : data.filter((item) => {
+          if ('description' in item) {
+            return item.description
+              .toLowerCase()
+              .includes(searchText.toLowerCase());
+          }
+          return item.name.toLowerCase().includes(searchText.toLowerCase());
+        });
 
     const options = filteredData.map((item) => ({
-      value: `${item.name} - ${item.description}`,
+      value: `${item.name}${
+        'description' in item ? ' -' + item.description : ''
+      }`,
       id: item.id,
     }));
 
@@ -29,7 +37,7 @@ const TableFilters = ({ data, setData }: TableFiltersProps) => {
   };
 
   const filterTableData = (
-    attribute: keyof ObjectData,
+    attribute: keyof (ObjectData | PersonnelData),
     value: number | string,
   ) => {
     setData(data.filter((item) => item[attribute] === value));
@@ -48,7 +56,9 @@ const TableFilters = ({ data, setData }: TableFiltersProps) => {
         }}
         onClear={() => setData(data)}
         onSearch={(text) => setOptions(getObjects(text))}
-        placeholder="Search by name or description"
+        placeholder={`Search by name ${
+          currentTab === 'supplies' ? 'or description' : ''
+        }`}
       />
     </div>
   );
