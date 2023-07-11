@@ -2,32 +2,29 @@ import { Alert } from 'antd';
 import TableContainer from 'components/tableContainer/tableContainer';
 import TableFilters from 'components/tableFilters/tableFilters';
 import { ObjectData } from 'interfaces/object.interface';
-import { PersonnelData } from 'interfaces/personnel.interface';
 import { useEffect, useState } from 'react';
 import apiService from 'services/api.service';
 import './dashboard.scss';
 import Spinner from 'components/spinner/spinner';
 import TableActions from 'components/tableActions/tableActions';
-import { useTabContext } from 'context/tab.context';
+import TableContext from 'context/table.context';
 
 const Dashboard = () => {
   const [error, setError] = useState<boolean>(false);
   const [, setLoading] = useState<boolean>(false);
-  const [objects, setObjects] = useState<(ObjectData | PersonnelData)[]>([]);
-  const [filteredObjects, setFilteredObjects] = useState<
-    (ObjectData | PersonnelData)[]
-  >([]);
-  const { currentTab } = useTabContext();
+  const [tableData, setTableData] = useState<any[]>([]);
+  const [filteredObjects, setFilteredObjects] = useState<ObjectData[]>([]);
+
+  const updateTableData = (newObject: any[]) => {
+    setTableData(newObject);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        setObjects([]);
-        setFilteredObjects([]);
-        const response = await apiService.getObjects(currentTab);
-        console.log('response', response.data);
-        setObjects(response.data);
+        const response = await apiService.getObjects();
+        setTableData(response.data);
         setFilteredObjects(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -38,19 +35,21 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [currentTab]);
+  }, []);
 
   return (
     <div>
       {error ? (
         <Alert message="Something was wrong. Try again later." type="error" />
-      ) : objects?.length > 0 ? (
+      ) : tableData?.length > 0 ? (
         <>
-          <div className="table-actions">
-            <TableFilters data={objects} setData={setFilteredObjects} />
-            <TableActions />
-          </div>
-          <TableContainer data={filteredObjects} />
+          <TableContext.Provider value={{ tableData, updateTableData }}>
+            <div className="table-actions">
+              <TableFilters setData={setFilteredObjects} />
+              <TableActions />
+            </div>
+            <TableContainer data={filteredObjects} />
+          </TableContext.Provider>
         </>
       ) : (
         <Spinner />

@@ -1,30 +1,26 @@
 import { AutoComplete } from 'antd';
 import './tableFilters.scss';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { ObjectData } from 'interfaces/object.interface';
-import { PersonnelData } from 'interfaces/personnel.interface';
-import { useTabContext } from 'context/tab.context';
+import TableContext from 'context/table.context';
 
 type TableFiltersProps = {
-  data: (ObjectData | PersonnelData)[];
-  setData: Dispatch<SetStateAction<(ObjectData | PersonnelData)[]>>;
+  setData: Dispatch<SetStateAction<ObjectData[]>>;
 };
 
-const TableFilters = ({ data, setData }: TableFiltersProps) => {
+const TableFilters = ({ setData }: TableFiltersProps) => {
+  const { tableData } = useContext(TableContext);
   const [options, setOptions] = useState<{ value: string; id: number }[]>([]);
-  const { currentTab } = useTabContext();
 
   const getObjects = (searchText: string) => {
-    const filteredData = !searchText
-      ? []
-      : data.filter((item) => {
-          if ('description' in item) {
-            return item.description
-              .toLowerCase()
-              .includes(searchText.toLowerCase());
-          }
-          return item.name.toLowerCase().includes(searchText.toLowerCase());
-        });
+    const filteredData = searchText
+      ? tableData.filter((item) => {
+          return (
+            item.description.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.name.toLowerCase().includes(searchText.toLowerCase())
+          );
+        })
+      : [];
 
     const options = filteredData.map((item) => ({
       value: `${item.name}${
@@ -37,10 +33,10 @@ const TableFilters = ({ data, setData }: TableFiltersProps) => {
   };
 
   const filterTableData = (
-    attribute: keyof (ObjectData | PersonnelData),
+    attribute: keyof ObjectData,
     value: number | string,
   ) => {
-    setData(data.filter((item) => item[attribute] === value));
+    setData(tableData.filter((item) => item[attribute] === value));
   };
 
   return (
@@ -54,11 +50,9 @@ const TableFilters = ({ data, setData }: TableFiltersProps) => {
             filterTableData('id', option.id);
           }
         }}
-        onClear={() => setData(data)}
+        onClear={() => setData(tableData)}
         onSearch={(text) => setOptions(getObjects(text))}
-        placeholder={`Search by name ${
-          currentTab === 'supplies' ? 'or description' : ''
-        }`}
+        placeholder="Search by name or description"
       />
     </div>
   );
